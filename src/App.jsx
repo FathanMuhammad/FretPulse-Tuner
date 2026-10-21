@@ -728,11 +728,12 @@ export default function App() {
 
     return (
         <div className="h-screen h-dvh w-full bg-slate-950 text-slate-100 flex flex-col items-center justify-center select-none font-sans overflow-hidden">
-            {/* ANDROID MOBILE VIEWPORT CONTAINER (ZERO-SCROLL S23 COMPATIBLE) */}
             <div className="w-full max-w-[440px] h-full max-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 sm:rounded-[36px] sm:border-[4px] sm:border-slate-800 sm:shadow-[0_25px_70px_rgba(0,0,0,0.85)] flex flex-col justify-between relative overflow-hidden">
-
-                {/* COMPACT TOP APP BAR */}
-                <header className="px-4 pt-3 pb-2 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 z-20 shrink-0">
+                {/* COMPACT TOP APP BAR WITH SAFE AREA HEADER */}
+                <header
+                    className="px-4 pb-2.5 bg-slate-900 border-b border-slate-800/80 z-20 shrink-0"
+                    style={{ paddingTop: 'max(env(safe-area-inset-top, 0px), 48px)' }}
+                >
                     {/* App Title & Quick Actions */}
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -783,7 +784,7 @@ export default function App() {
                     </div>
 
                     {/* Mode Selector Segmented Pill Bar */}
-                    <div className="grid grid-cols-3 gap-1 p-1 mt-2 bg-slate-950/90 rounded-xl border border-slate-800/80 text-[11px] font-semibold">
+                    <div className="grid grid-cols-3 gap-1 p-1 mt-2.5 bg-slate-950/90 rounded-xl border border-slate-800/80 text-[11px] font-semibold">
                         <button
                             onClick={() => setTuningMode('AUTO')}
                             className={`py-1 px-1.5 rounded-lg flex items-center justify-center gap-1 transition-all ${tuningMode === 'AUTO'
@@ -828,223 +829,227 @@ export default function App() {
                     </div>
                 )}
 
-                {/* MAIN PRECISION GAUGE & HEADSTOCK (FLEX FIT 1-SCREEN) */}
-                <main className="flex-1 flex flex-col items-center justify-between px-3 py-1.5 relative overflow-hidden">
-                    {/* Strobe Bar + Cents Scale Header */}
-                    <div className="w-full shrink-0">
-                        <div className="flex justify-between items-center text-[9px] font-mono text-slate-400 px-1 mb-0.5">
-                            <span className={hasSignal && centsOffset < -2 ? 'text-rose-400 font-bold' : ''}>-50c FLAT ♭</span>
-                            <span className={hasSignal && absCents <= 2 ? 'text-emerald-400 font-bold' : ''}>0c CENTER</span>
-                            <span className={hasSignal && centsOffset > 2 ? 'text-rose-400 font-bold' : ''}>♯ SHARP +50c</span>
+                {/* MAIN PRECISION GAUGE & HEADSTOCK (PROPORTIONAL ZERO-SCROLL LAYOUT) */}
+                <main 
+                    className="flex-1 flex flex-col justify-between px-3 py-2 min-h-0 relative overflow-hidden"
+                    style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 14px)' }}
+                >
+                    {/* UPPER SECTION: UNIFIED INSTRUMENT CLUSTER (STROBE + GAUGE + NOTE) */}
+                    <div className="flex-1 flex flex-col items-center justify-center relative min-h-0 py-1">
+                        {/* Strobe Bar with Integrated Cent Range */}
+                        <div className="w-full max-w-[330px] px-1 mb-1.5">
+                            <div className="flex justify-between items-center text-[9px] font-mono text-slate-400 px-1 mb-0.5">
+                                <span className={hasSignal && centsOffset < -2 ? 'text-rose-400 font-bold' : ''}>-50c FLAT ♭</span>
+                                <span className={hasSignal && absCents <= 2 ? 'text-emerald-400 font-bold' : ''}>0c CENTER</span>
+                                <span className={hasSignal && centsOffset > 2 ? 'text-rose-400 font-bold' : ''}>♯ SHARP +50c</span>
+                            </div>
+
+                            <div className="w-full h-4 bg-slate-950 rounded-lg border border-slate-800/90 overflow-hidden relative shadow-inner">
+                                <canvas
+                                    ref={strobeCanvasRef}
+                                    width={380}
+                                    height={16}
+                                    className="w-full h-full block"
+                                />
+                                <div className="w-0.5 h-full bg-emerald-400/80 absolute left-1/2 -translate-x-1/2 top-0 shadow-[0_0_8px_#10b981]" />
+                            </div>
                         </div>
 
-                        {/* Strobe Drift Canvas */}
-                        <div className="w-full h-4 bg-slate-950 rounded-lg border border-slate-800/90 overflow-hidden relative shadow-inner">
-                            <canvas
-                                ref={strobeCanvasRef}
-                                width={380}
-                                height={16}
-                                className="w-full h-full block"
-                            />
-                            {/* Center Lock Hairline */}
-                            <div className="w-0.5 h-full bg-emerald-400/80 absolute left-1/2 -translate-x-1/2 top-0 shadow-[0_0_8px_#10b981]" />
-                        </div>
-                    </div>
-
-                    {/* PRECISION ARC NEEDLE GAUGE */}
-                    <div className="relative w-full flex flex-col items-center my-0 shrink-0">
-                        <svg
-                            viewBox="0 0 320 175"
-                            className="w-full max-w-[310px] overflow-visible drop-shadow-lg"
-                        >
-                            <defs>
-                                <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stopColor="#f43f5e" />
-                                    <stop offset="35%" stopColor="#f59e0b" />
-                                    <stop offset="47%" stopColor="#10b981" />
-                                    <stop offset="53%" stopColor="#10b981" />
-                                    <stop offset="65%" stopColor="#f59e0b" />
-                                    <stop offset="100%" stopColor="#f43f5e" />
-                                </linearGradient>
-                                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                                    <feGaussianBlur stdDeviation="3.5" result="blur" />
-                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                                </filter>
-                            </defs>
-
-                            {/* Outer Track Background */}
-                            <path
-                                d="M 28 155 A 132 132 0 0 1 292 155"
-                                fill="none"
-                                stroke="#1e293b"
-                                strokeWidth="12"
-                                strokeLinecap="round"
-                            />
-
-                            {/* Color-Coded Precision Scale Arc */}
-                            <path
-                                d="M 28 155 A 132 132 0 0 1 292 155"
-                                fill="none"
-                                stroke="url(#arcGrad)"
-                                strokeWidth="6"
-                                strokeLinecap="round"
-                                strokeDasharray="3 5"
-                                opacity={hasSignal ? 0.95 : 0.35}
-                            />
-
-                            {/* Fine Tick Marks */}
-                            {Array.from({ length: 21 }).map((_, idx) => {
-                                const centVal = (idx - 10) * 5;
-                                const deg = (centVal / 50) * 75;
-                                const rad = ((deg - 90) * Math.PI) / 180;
-                                const isMajor = centVal % 25 === 0;
-                                const isZero = centVal === 0;
-                                const rInner = isZero ? 106 : isMajor ? 112 : 117;
-                                const rOuter = isZero ? 128 : 124;
-
-                                const x1 = 160 + rInner * Math.cos(rad);
-                                const y1 = 155 + rInner * Math.sin(rad);
-                                const x2 = 160 + rOuter * Math.cos(rad);
-                                const y2 = 155 + rOuter * Math.sin(rad);
-
-                                const rLabel = 96;
-                                const lx = 160 + rLabel * Math.cos(rad);
-                                const ly = 155 + rLabel * Math.sin(rad);
-
-                                return (
-                                    <g key={centVal}>
-                                        <line
-                                            x1={x1}
-                                            y1={y1}
-                                            x2={x2}
-                                            y2={y2}
-                                            stroke={
-                                                isZero
-                                                    ? '#10b981'
-                                                    : isMajor
-                                                        ? '#94a3b8'
-                                                        : '#475569'
-                                            }
-                                            strokeWidth={isZero ? '3' : isMajor ? '2' : '1.2'}
-                                            strokeLinecap="round"
-                                        />
-                                        {isMajor && (
-                                            <text
-                                                x={lx}
-                                                y={ly + 3}
-                                                textAnchor="middle"
-                                                className="fill-slate-400 text-[9px] font-mono font-semibold"
-                                            >
-                                                {centVal > 0 ? `+${centVal}` : centVal}
-                                            </text>
-                                        )}
-                                    </g>
-                                );
-                            })}
-
-                            {/* Center In-Tune Sweet Spot Notch */}
-                            <polygon
-                                points="160,20 155,10 165,10"
-                                fill={hasSignal && absCents <= 2 ? '#10b981' : '#475569'}
-                            />
-
-                            {/* Dynamic Needle Group */}
-                            <g
-                                transform={`translate(160, 155) rotate(${needleAngle})`}
-                                style={{
-                                    transition: hasSignal
-                                        ? 'transform 65ms cubic-bezier(0.22, 1, 0.36, 1)'
-                                        : 'transform 400ms ease-out',
-                                }}
+                        {/* Precision Arc Needle Gauge */}
+                        <div className="relative w-full flex flex-col items-center">
+                            <svg
+                                viewBox="0 0 320 175"
+                                className="w-full max-w-[325px] overflow-visible drop-shadow-lg"
                             >
-                                <line
-                                    x1="0"
-                                    y1="0"
-                                    x2="0"
-                                    y2="-122"
-                                    stroke={tuningStatus.hex}
-                                    strokeWidth="4"
-                                    strokeLinecap="round"
-                                    filter={hasSignal ? 'url(#glow)' : undefined}
-                                />
-                                <line
-                                    x1="0"
-                                    y1="10"
-                                    x2="0"
-                                    y2="-122"
-                                    stroke="#f8fafc"
-                                    strokeWidth="2"
+                                <defs>
+                                    <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stopColor="#f43f5e" />
+                                        <stop offset="35%" stopColor="#f59e0b" />
+                                        <stop offset="47%" stopColor="#10b981" />
+                                        <stop offset="53%" stopColor="#10b981" />
+                                        <stop offset="65%" stopColor="#f59e0b" />
+                                        <stop offset="100%" stopColor="#f43f5e" />
+                                    </linearGradient>
+                                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="3.5" result="blur" />
+                                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                    </filter>
+                                </defs>
+
+                                {/* Outer Track Background */}
+                                <path
+                                    d="M 28 155 A 132 132 0 0 1 292 155"
+                                    fill="none"
+                                    stroke="#1e293b"
+                                    strokeWidth="12"
                                     strokeLinecap="round"
                                 />
-                                <circle
-                                    cx="0"
-                                    cy="0"
-                                    r="8"
-                                    fill="#0f172a"
-                                    stroke={tuningStatus.hex}
-                                    strokeWidth="3"
+
+                                {/* Color-Coded Precision Scale Arc */}
+                                <path
+                                    d="M 28 155 A 132 132 0 0 1 292 155"
+                                    fill="none"
+                                    stroke="url(#arcGrad)"
+                                    strokeWidth="6"
+                                    strokeLinecap="round"
+                                    strokeDasharray="3 5"
+                                    opacity={hasSignal ? 0.95 : 0.35}
                                 />
-                            </g>
-                        </svg>
 
-                        {/* COMPACT CENTRAL NOTE BADGE (WITHOUT TARGET HZ & WITHOUT READOUT ROW) */}
-                        <div className="flex flex-col items-center -mt-7 z-10">
-                            <div
-                                className={`relative w-20 h-20 rounded-2xl flex flex-col items-center justify-center border-2 transition-all duration-200 ${!hasSignal
-                                        ? 'bg-slate-900/90 border-slate-800 text-slate-300'
-                                        : absCents <= 2
-                                            ? 'bg-emerald-950/80 border-emerald-400 text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.4)] scale-105'
-                                            : absCents <= 10
-                                                ? 'bg-amber-950/60 border-amber-400/80 text-amber-200'
-                                                : 'bg-rose-950/60 border-rose-500/80 text-rose-200'
-                                    }`}
-                            >
-                                {/* In-tune checkmark corner badge */}
-                                {hasSignal && absCents <= 2 && (
-                                    <span className="absolute -top-1.5 -right-1.5 bg-emerald-500 text-slate-950 rounded-full p-0.5 shadow-md">
-                                        <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />
-                                    </span>
-                                )}
+                                {/* Fine Tick Marks */}
+                                {Array.from({ length: 21 }).map((_, idx) => {
+                                    const centVal = (idx - 10) * 5;
+                                    const deg = (centVal / 50) * 75;
+                                    const rad = ((deg - 90) * Math.PI) / 180;
+                                    const isMajor = centVal % 25 === 0;
+                                    const isZero = centVal === 0;
+                                    const rInner = isZero ? 106 : isMajor ? 112 : 117;
+                                    const rOuter = isZero ? 128 : 124;
 
-                                {/* Lock Indicator when in Manual Mode */}
-                                {tuningMode === 'MANUAL' && (
-                                    <span className="absolute -top-1.5 -left-1.5 bg-amber-500 text-slate-950 rounded-full px-1.5 py-0.5 text-[8px] font-bold flex items-center gap-0.5 shadow">
-                                        <Lock className="w-2 h-2" /> S{lockedStringNum}
-                                    </span>
-                                )}
+                                    const x1 = 160 + rInner * Math.cos(rad);
+                                    const y1 = 155 + rInner * Math.sin(rad);
+                                    const x2 = 160 + rOuter * Math.cos(rad);
+                                    const y2 = 155 + rOuter * Math.sin(rad);
 
-                                <div className="flex items-baseline">
-                                    <span className="text-3xl font-black tracking-tighter">
-                                        {activeTarget.note}
-                                    </span>
-                                    <span className="text-lg font-bold text-emerald-400 ml-0.5">
-                                        {activeTarget.octave}
-                                    </span>
+                                    const rLabel = 96;
+                                    const lx = 160 + rLabel * Math.cos(rad);
+                                    const ly = 155 + rLabel * Math.sin(rad);
+
+                                    return (
+                                        <g key={centVal}>
+                                            <line
+                                                x1={x1}
+                                                y1={y1}
+                                                x2={x2}
+                                                y2={y2}
+                                                stroke={
+                                                    isZero
+                                                        ? '#10b981'
+                                                        : isMajor
+                                                            ? '#94a3b8'
+                                                            : '#475569'
+                                                }
+                                                strokeWidth={isZero ? '3' : isMajor ? '2' : '1.2'}
+                                                strokeLinecap="round"
+                                            />
+                                            {isMajor && (
+                                                <text
+                                                    x={lx}
+                                                    y={ly + 3}
+                                                    textAnchor="middle"
+                                                    className="fill-slate-400 text-[9px] font-mono font-semibold"
+                                                >
+                                                    {centVal > 0 ? `+${centVal}` : centVal}
+                                                </text>
+                                            )}
+                                        </g>
+                                    );
+                                })}
+
+                                {/* Center In-Tune Sweet Spot Notch */}
+                                <polygon
+                                    points="160,20 155,10 165,10"
+                                    fill={hasSignal && absCents <= 2 ? '#10b981' : '#475569'}
+                                />
+
+                                {/* Dynamic Needle Group */}
+                                <g
+                                    transform={`translate(160, 155) rotate(${needleAngle})`}
+                                    style={{
+                                        transition: hasSignal
+                                            ? 'transform 65ms cubic-bezier(0.22, 1, 0.36, 1)'
+                                            : 'transform 400ms ease-out',
+                                    }}
+                                >
+                                    <line
+                                        x1="0"
+                                        y1="0"
+                                        x2="0"
+                                        y2="-122"
+                                        stroke={tuningStatus.hex}
+                                        strokeWidth="4"
+                                        strokeLinecap="round"
+                                        filter={hasSignal ? 'url(#glow)' : undefined}
+                                    />
+                                    <line
+                                        x1="0"
+                                        y1="10"
+                                        x2="0"
+                                        y2="-122"
+                                        stroke="#f8fafc"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                    />
+                                    <circle
+                                        cx="0"
+                                        cy="0"
+                                        r="8"
+                                        fill="#0f172a"
+                                        stroke={tuningStatus.hex}
+                                        strokeWidth="3"
+                                    />
+                                </g>
+                            </svg>
+
+                            {/* Central Note Badge */}
+                            <div className="flex flex-col items-center -mt-7 z-10">
+                                <div
+                                    className={`relative w-20 h-20 rounded-2xl flex flex-col items-center justify-center border-2 transition-all duration-200 ${!hasSignal
+                                            ? 'bg-slate-900/90 border-slate-800 text-slate-300'
+                                            : absCents <= 2
+                                                ? 'bg-emerald-950/80 border-emerald-400 text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.4)] scale-105'
+                                                : absCents <= 10
+                                                    ? 'bg-amber-950/60 border-amber-400/80 text-amber-200'
+                                                    : 'bg-rose-950/60 border-rose-500/80 text-rose-200'
+                                        }`}
+                                >
+                                    {/* In-tune checkmark corner badge */}
+                                    {hasSignal && absCents <= 2 && (
+                                        <span className="absolute -top-1.5 -right-1.5 bg-emerald-500 text-slate-950 rounded-full p-0.5 shadow-md">
+                                            <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />
+                                        </span>
+                                    )}
+
+                                    {/* Lock Indicator when in Manual Mode */}
+                                    {tuningMode === 'MANUAL' && (
+                                        <span className="absolute -top-1.5 -left-1.5 bg-amber-500 text-slate-950 rounded-full px-1.5 py-0.5 text-[8px] font-bold flex items-center gap-0.5 shadow">
+                                            <Lock className="w-2 h-2" /> S{lockedStringNum}
+                                        </span>
+                                    )}
+
+                                    <div className="flex items-baseline">
+                                        <span className="text-3xl font-black tracking-tighter">
+                                            {activeTarget.note}
+                                        </span>
+                                        <span className="text-lg font-bold text-emerald-400 ml-0.5">
+                                            {activeTarget.octave}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Status Feedback Pill */}
+                                <div
+                                    className={`mt-1.5 px-3.5 py-1 rounded-full border text-[11px] font-bold tracking-wide flex items-center gap-1.5 transition-all shadow-sm ${tuningStatus.badgeBg}`}
+                                >
+                                    {hasSignal && centsOffset < -2 && <ChevronUp className="w-3.5 h-3.5 animate-bounce" />}
+                                    {hasSignal && centsOffset > 2 && <ChevronDown className="w-3.5 h-3.5 animate-bounce" />}
+                                    <span>{tuningStatus.label}</span>
                                 </div>
                             </div>
-
-                            {/* Status Feedback Pill */}
-                            <div
-                                className={`mt-1.5 px-3 py-0.5 rounded-full border text-[11px] font-bold tracking-wide flex items-center gap-1 transition-all ${tuningStatus.badgeBg}`}
-                            >
-                                {hasSignal && centsOffset < -2 && <ChevronUp className="w-3.5 h-3.5 animate-bounce" />}
-                                {hasSignal && centsOffset > 2 && <ChevronDown className="w-3.5 h-3.5 animate-bounce" />}
-                                <span>{tuningStatus.label}</span>
-                            </div>
                         </div>
                     </div>
 
-                    {/* INTERACTIVE GUITAR HEADSTOCK & 6-STRING SELECTOR */}
-                    <div className="w-full mt-1 bg-slate-900/70 border border-slate-800/90 rounded-2xl p-2 shrink-0">
-                        <div className="flex items-center justify-between mb-1.5 px-1">
+                    {/* LOWER SECTION: INTERACTIVE GUITAR HEADSTOCK CONTROLLER */}
+                    <div className="w-full bg-slate-900/80 border border-slate-800/90 rounded-2xl p-2.5 shrink-0 shadow-lg">
+                        <div className="flex items-center justify-between mb-2 px-1">
                             <div className="flex items-center gap-1.5">
-                                <span className="text-[11px] font-bold text-slate-200">
+                                <span className="text-xs font-bold text-slate-200">
                                     Standard 6-String Headstock
                                 </span>
                                 {tuningMode === 'MANUAL' && (
                                     <button
                                         onClick={() => setTuningMode('AUTO')}
-                                        className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-0.5 hover:bg-amber-500/30"
+                                        className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-0.5 hover:bg-amber-500/30 font-semibold"
                                     >
                                         <Unlock className="w-2.5 h-2.5" /> Unlock Auto
                                     </button>
@@ -1063,25 +1068,25 @@ export default function App() {
                                     </button>
                                 )}
 
-                                <span className="text-[10px] font-mono text-emerald-400">
+                                <span className="text-[11px] font-mono text-emerald-400 font-semibold">
                                     {tunedCount}/6 Tuned
                                 </span>
                                 {tunedCount > 0 && (
                                     <button
                                         onClick={() => setTunedStrings({})}
-                                        className="p-1 rounded bg-slate-800 text-slate-400 hover:text-white"
+                                        className="p-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition active:scale-95"
                                         title="Reset tuned string badges"
                                     >
-                                        <RotateCcw className="w-2.5 h-2.5" />
+                                        <RotateCcw className="w-3 h-3" />
                                     </button>
                                 )}
                             </div>
                         </div>
 
                         {/* Headstock Layout: Left Pegs (6, 5, 4) | Visual Fretboard Nut | Right Pegs (3, 2, 1) */}
-                        <div className="grid grid-cols-11 gap-1 items-center">
+                        <div className="grid grid-cols-11 gap-1.5 items-center">
                             {/* Left Side Strings: D3 (4), A2 (5), E2 (6) */}
-                            <div className="col-span-4 flex flex-col gap-1.5">
+                            <div className="col-span-4 flex flex-col gap-2">
                                 {[calibratedStrings[2], calibratedStrings[1], calibratedStrings[0]].map((str) => {
                                     const isTarget =
                                         tuningMode !== 'CHROMATIC' &&
@@ -1094,8 +1099,8 @@ export default function App() {
                                     return (
                                         <div
                                             key={str.stringNum}
-                                            className={`group relative rounded-xl border p-1.5 transition-all flex items-center justify-between ${isTarget
-                                                    ? 'bg-emerald-500/15 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                                            className={`group relative rounded-xl border p-2 transition-all flex items-center justify-between ${isTarget
+                                                    ? 'bg-emerald-500/15 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.25)] ring-1 ring-emerald-500/30'
                                                     : isTuned
                                                         ? 'bg-slate-800/90 border-emerald-500/40'
                                                         : 'bg-slate-950/80 border-slate-800 hover:border-slate-700'
@@ -1103,7 +1108,7 @@ export default function App() {
                                         >
                                             <button
                                                 onClick={() => handleSelectString(str)}
-                                                className="flex items-center gap-1.5 flex-1 text-left min-w-0"
+                                                className="flex items-center gap-2 flex-1 text-left min-w-0"
                                             >
                                                 <span
                                                     className={`w-5 h-5 rounded-lg text-[10px] font-black flex items-center justify-center shrink-0 ${isTarget
@@ -1146,8 +1151,8 @@ export default function App() {
                             </div>
 
                             {/* Center Visual Guitar Headstock & Strings SVG */}
-                            <div className="col-span-3 h-full flex items-center justify-center">
-                                <svg viewBox="0 0 90 170" className="w-full h-36">
+                            <div className="col-span-3 h-full flex items-center justify-center py-0.5">
+                                <svg viewBox="0 0 90 170" className="w-full h-36 max-h-[155px]">
                                     <path
                                         d="M 18 14 Q 45 4 72 14 L 78 130 L 66 148 L 66 168 L 24 168 L 24 148 L 12 130 Z"
                                         fill="#0f172a"
@@ -1222,7 +1227,7 @@ export default function App() {
                             </div>
 
                             {/* Right Side Strings: G3 (3), B3 (2), E4 (1) */}
-                            <div className="col-span-4 flex flex-col gap-1.5">
+                            <div className="col-span-4 flex flex-col gap-2">
                                 {[calibratedStrings[3], calibratedStrings[4], calibratedStrings[5]].map((str) => {
                                     const isTarget =
                                         tuningMode !== 'CHROMATIC' &&
@@ -1235,8 +1240,8 @@ export default function App() {
                                     return (
                                         <div
                                             key={str.stringNum}
-                                            className={`group relative rounded-xl border p-1.5 transition-all flex items-center justify-between ${isTarget
-                                                    ? 'bg-emerald-500/15 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                                            className={`group relative rounded-xl border p-2 transition-all flex items-center justify-between ${isTarget
+                                                    ? 'bg-emerald-500/15 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.25)] ring-1 ring-emerald-500/30'
                                                     : isTuned
                                                         ? 'bg-slate-800/90 border-emerald-500/40'
                                                         : 'bg-slate-950/80 border-slate-800 hover:border-slate-700'
@@ -1256,7 +1261,7 @@ export default function App() {
 
                                             <button
                                                 onClick={() => handleSelectString(str)}
-                                                className="flex items-center justify-end gap-1.5 flex-1 text-right min-w-0"
+                                                className="flex items-center justify-end gap-2 flex-1 text-right min-w-0"
                                             >
                                                 <div className="min-w-0">
                                                     <div className="flex items-center justify-end gap-1 leading-none">
