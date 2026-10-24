@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { Capacitor } from '@capacitor/core';
 import {
     Mic,
     MicOff,
@@ -725,14 +726,15 @@ export default function App() {
     const needleAngle = hasSignal ? (clampedCents / 50) * 75 : 0;
 
     const tunedCount = Object.keys(tunedStrings).length;
+    const isNative = Capacitor.isNativePlatform();
 
     return (
-        <div className="h-screen h-dvh w-full bg-slate-950 text-slate-100 flex flex-col items-center justify-center select-none font-sans overflow-hidden">
-            <div className="w-full max-w-[440px] h-full max-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 sm:rounded-[36px] sm:border-[4px] sm:border-slate-800 sm:shadow-[0_25px_70px_rgba(0,0,0,0.85)] flex flex-col justify-between relative overflow-hidden">
+        <div className="h-screen h-dvh w-full bg-slate-950 text-slate-100 flex flex-col items-center justify-center select-none font-sans overflow-hidden p-0 sm:p-4">
+            <div className="w-full max-w-[440px] h-full sm:h-[840px] max-h-screen sm:max-h-[92vh] bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 sm:rounded-[36px] sm:border-[4px] sm:border-slate-800 sm:shadow-[0_25px_70px_rgba(0,0,0,0.85)] flex flex-col justify-between relative overflow-hidden">
                 {/* COMPACT TOP APP BAR WITH SAFE AREA HEADER */}
                 <header
                     className="px-4 pb-2.5 bg-slate-900 border-b border-slate-800/80 z-20 shrink-0"
-                    style={{ paddingTop: 'max(env(safe-area-inset-top, 0px), 48px)' }}
+                    style={{ paddingTop: isNative ? 'max(env(safe-area-inset-top, 0px), 48px)' : '16px' }}
                 >
                     {/* App Title & Quick Actions */}
                     <div className="flex items-center justify-between">
@@ -832,7 +834,7 @@ export default function App() {
                 {/* MAIN PRECISION GAUGE & HEADSTOCK (PROPORTIONAL ZERO-SCROLL LAYOUT) */}
                 <main 
                     className="flex-1 flex flex-col justify-between px-3 py-2 min-h-0 relative overflow-hidden"
-                    style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 14px)' }}
+                    style={{ paddingBottom: isNative ? 'max(env(safe-area-inset-bottom, 0px), 14px)' : '12px' }}
                 >
                     {/* UPPER SECTION: UNIFIED INSTRUMENT CLUSTER (STROBE + GAUGE + NOTE) */}
                     <div className="flex-1 flex flex-col items-center justify-center relative min-h-0 py-1">
