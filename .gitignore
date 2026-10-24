@@ -10,6 +10,9 @@ dist/
 dist-ssr/
 *.local
 
+.env
+.agents
+
 # Android build outputs & caches (keep android project code!)
 android/.gradle/
 android/app/build/

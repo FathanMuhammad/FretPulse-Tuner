@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "com.fathan.fretpulse"
+    namespace "com.fathan.tunesense"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.fathan.fretpulse"
+        applicationId "com.fathan.tunesense"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

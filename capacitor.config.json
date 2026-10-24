@@ -1,5 +1,5 @@
 {
-  "appId": "com.fathan.fretpulse",
-  "appName": "FretPulse Tuner",
+  "appId": "com.fathan.tunesense",
+  "appName": "TuneSense",
   "webDir": "dist"
 }

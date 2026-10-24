@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Ben-Day Halftone Dot Pattern -->
+    <pattern id="halftone" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+      <circle cx="6" cy="6" r="1.8" fill="#ffffff" opacity="0.08" />
+    </pattern>
+    
+    <pattern id="halftone-yellow" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+      <circle cx="5" cy="5" r="1.5" fill="#facc15" opacity="0.25" />
+    </pattern>
+
+    <!-- Hard Comic Drop Shadow Filter -->
+    <filter id="comicShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="8" dy="8" stdDeviation="0" flood-color="#000000" flood-opacity="1" />
+    </filter>
+
+    <filter id="badgeShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="5" dy="5" stdDeviation="0" flood-color="#000000" flood-opacity="1" />
+    </filter>
+    
+    <!-- Linear Gradients for 80s Marvel Vibe -->
+    <linearGradient id="marvelRed" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="40%" stop-color="#e22129" />
+      <stop offset="100%" stop-color="#991b1b" />
+    </linearGradient>
+
+    <linearGradient id="comicGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#facc15" />
+      <stop offset="100%" stop-color="#eab308" />
+    </linearGradient>
+
+    <linearGradient id="cyanEnergy" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#67e8f9" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+
+  <!-- 1. Dark Inked Comic Background -->
+  <rect width="512" height="512" rx="40" fill="#0c0e18" />
+  <rect width="512" height="512" rx="40" fill="url(#halftone)" />
+  <rect width="512" height="512" rx="40" fill="none" stroke="#000000" stroke-width="10" />
+
+  <!-- Background Comic Action Rays / Sunburst centered at (256, 256) -->
+  <g opacity="0.32">
+    <path d="M 256 256 L 0 30 L 0 80 Z" fill="#facc15" />
+    <path d="M 256 256 L 0 160 L 0 210 Z" fill="#facc15" />
+    <path d="M 256 256 L 0 300 L 0 350 Z" fill="#facc15" />
+    <path d="M 256 256 L 0 430 L 0 480 Z" fill="#facc15" />
+    <path d="M 256 256 L 512 30 L 512 80 Z" fill="#facc15" />
+    <path d="M 256 256 L 512 160 L 512 210 Z" fill="#facc15" />
+    <path d="M 256 256 L 512 300 L 512 350 Z" fill="#facc15" />
+    <path d="M 256 256 L 512 430 L 512 480 Z" fill="#facc15" />
+    <path d="M 256 256 L 80 0 L 130 0 Z" fill="#facc15" />
+    <path d="M 256 256 L 380 0 L 430 0 Z" fill="#facc15" />
+    <path d="M 256 256 L 80 512 L 130 512 Z" fill="#facc15" />
+    <path d="M 256 256 L 380 512 L 430 512 Z" fill="#facc15" />
+  </g>
+
+  <!-- Centered Superhero Emblem Group -->
+  <g transform="translate(256, 256) scale(1.12) translate(-256, -205)">
+    <!-- Main Superhero Guitar Pick Shield -->
+    <g filter="url(#comicShadow)">
+      <path d="M 140 70 C 210 50, 302 50, 372 70 C 440 160, 410 260, 256 360 C 102 260, 72 160, 140 70 Z" 
+            fill="url(#marvelRed)" 
+            stroke="#000000" 
+            stroke-width="10" 
+            stroke-linejoin="round" />
+    </g>
+
+    <!-- Halftone texture inside the pick -->
+    <path d="M 140 70 C 210 50, 302 50, 372 70 C 440 160, 410 260, 256 360 C 102 260, 72 160, 140 70 Z" 
+          fill="url(#halftone-yellow)" />
+
+    <!-- Comic Inking Accent on Pick Edge -->
+    <path d="M 155 85 C 215 70, 297 70, 357 85 C 410 165, 385 245, 256 335" 
+          fill="none" 
+          stroke="#ffffff" 
+          stroke-width="3.5" 
+          stroke-linecap="round" 
+          opacity="0.35" />
+
+    <!-- Central Inked Tuner Chamber -->
+    <g filter="url(#badgeShadow)">
+      <circle cx="256" cy="195" r="95" fill="#121524" stroke="#000000" stroke-width="7" />
+    </g>
+    <circle cx="256" cy="195" r="88" fill="url(#halftone)" />
+
+    <!-- Arc Gauge Calibration Track (-50c to +50c) -->
+    <path d="M 185 195 A 71 71 0 0 1 327 195" fill="none" stroke="#252b42" stroke-width="12" stroke-linecap="round" />
+    <path d="M 185 195 A 71 71 0 0 1 327 195" fill="none" stroke="#facc15" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 6" />
+
+    <!-- Gauge Tick Marks -->
+    <line x1="256" y1="124" x2="256" y2="138" stroke="#22c55e" stroke-width="5" stroke-linecap="round" />
+    <line x1="205" y1="145" x2="214" y2="153" stroke="#ef4444" stroke-width="4" stroke-linecap="round" />
+    <line x1="307" y1="145" x2="298" y2="153" stroke="#ef4444" stroke-width="4" stroke-linecap="round" />
+
+    <!-- Superhero Guitar Tuning Fork / Headstock Body -->
+    <path d="M 238 95 L 238 180 L 256 200 L 274 180 L 274 95 L 260 95 L 260 165 L 252 165 L 252 95 Z" 
+          fill="url(#comicGold)" 
+          stroke="#000000" 
+          stroke-width="5" 
+          stroke-linejoin="round" />
+
+    <!-- Tuning Pegs on the sides (6 Pegs for 6 Strings) -->
+    <rect x="156" y="160" width="16" height="10" rx="3" fill="#ffffff" stroke="#000000" stroke-width="3" />
+    <rect x="150" y="185" width="16" height="10" rx="3" fill="#ffffff" stroke="#000000" stroke-width="3" />
+    <rect x="156" y="210" width="16" height="10" rx="3" fill="#ffffff" stroke="#000000" stroke-width="3" />
+    <rect x="340" y="160" width="16" height="10" rx="3" fill="#ffffff" stroke="#000000" stroke-width="3" />
+    <rect x="346" y="185" width="16" height="10" rx="3" fill="#ffffff" stroke="#000000" stroke-width="3" />
+    <rect x="340" y="210" width="16" height="10" rx="3" fill="#ffffff" stroke="#000000" stroke-width="3" />
+
+    <!-- Electric Comic Lightning Frequency Bolt -->
+    <path d="M 264 105 L 244 180 L 268 185 L 236 295 L 276 210 L 252 205 Z" 
+          fill="#00e5ff" 
+          stroke="#000000" 
+          stroke-width="4.5" 
+          stroke-linejoin="miter" 
+          filter="url(#badgeShadow)" />
+
+    <!-- Center "In-Tune" Super Spot (Target Indicator) -->
+    <circle cx="256" cy="130" r="12" fill="#22c55e" stroke="#000000" stroke-width="3.5" />
+    <circle cx="256" cy="130" r="5" fill="#ffffff" />
+
+    <!-- Dynamic Precision Needle (Pointing Dead-Center) -->
+    <line x1="256" y1="210" x2="256" y2="135" stroke="#000000" stroke-width="7" stroke-linecap="round" />
+    <line x1="256" y1="210" x2="256" y2="135" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+    <circle cx="256" cy="210" r="8" fill="#e22129" stroke="#000000" stroke-width="3.5" />
+
+    <!-- Action Stars on Flanks -->
+    <g fill="#facc15" stroke="#000000" stroke-width="2.5">
+      <polygon points="120,120 125,132 138,134 128,143 131,155 120,148 109,155 112,143 102,134 115,132" />
+      <polygon points="392,120 397,132 410,134 400,143 403,155 392,148 381,155 384,143 374,134 387,132" />
+    </g>
+  </g>
+</svg>

@@ -10,11 +10,83 @@
     padding: 0;
     width: 100%;
     min-height: 100%;
-    background-color: #020617; /* slate-950 */
+    background-color: #0b0d17;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
   }
+}
+
+/* ==========================================
+ * 80s MARVEL COMIC BOOK RETRO STYLES
+ * ========================================== */
+.font-comic {
+  font-family: 'Bangers', cursive, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.font-marker {
+  font-family: 'Permanent Marker', cursive, sans-serif;
+}
+
+.font-grotesk {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Halftone Ben-Day dots texture */
+.comic-halftone {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+}
+
+.comic-halftone-yellow {
+  background-image: radial-gradient(rgba(250, 204, 21, 0.12) 1.5px, transparent 1.5px);
+  background-size: 8px 8px;
+}
+
+/* Heavy Comic Inked Borders & Hard Offset Drop Shadows */
+.comic-panel {
+  border: 2.5px solid #000000;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.comic-panel-sm {
+  border: 2px solid #000000;
+  box-shadow: 2.5px 2.5px 0px #000000;
+}
+
+.comic-panel-red {
+  border: 2.5px solid #000000;
+  box-shadow: 4px 4px 0px #dc2626;
+}
+
+.comic-panel-yellow {
+  border: 2.5px solid #000000;
+  box-shadow: 4px 4px 0px #eab308;
+}
+
+.comic-btn {
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  transition: all 0.1s ease;
+}
+
+.comic-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+/* 80s Comic Ink Typography Outlines & Shadows */
+.comic-text-shadow {
+  text-shadow: 2px 2px 0px #000000, -1px -1px 0px #000000, 1px -1px 0px #000000, -1px 1px 0px #000000;
+}
+
+.comic-text-shadow-lg {
+  text-shadow: 3.5px 3.5px 0px #000000, -1.5px -1.5px 0px #000000, 1.5px -1.5px 0px #000000, -1.5px 1.5px 0px #000000;
+}
+
+.comic-text-shadow-yellow {
+  text-shadow: 3px 3px 0px #000000, -1px -1px 0px #000000;
 }
 
 /* Safe area insets for mobile devices / notches */

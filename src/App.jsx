@@ -195,6 +195,13 @@ export default function App() {
     const [noiseGateRms, setNoiseGateRms] = useState(0.012);
     const [showSettings, setShowSettings] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
+    // Purge any legacy theme storage keys so app is 100% full Marvel Comic edition
+    useEffect(() => {
+        try {
+            localStorage.removeItem('fretpulse-theme');
+            localStorage.removeItem('fretpulse-comic-edition');
+        } catch (_) {}
+    }, []);
 
     // --- Real-Time Pitch Detection State ---
     const [detectedFreq, setDetectedFreq] = useState(null);
@@ -669,15 +676,15 @@ export default function App() {
     const clampedCents = Math.max(-50, Math.min(50, centsOffset));
     const absCents = Math.abs(centsOffset);
 
-    // Determine tuning precision status
+    // Determine tuning precision status (80s Marvel Comic Book Action)
     const tuningStatus = useMemo(() => {
         if (!hasSignal) {
             return {
                 state: 'IDLE',
-                label: 'Pluck a string...',
+                label: '★ PLUCK A STRING, HERO! ★',
                 subLabel: 'Listening for guitar pitch',
-                color: 'text-slate-400',
-                badgeBg: 'bg-slate-800/80 border-slate-700 text-slate-300',
+                color: 'text-yellow-400',
+                badgeBg: 'bg-[#181d2d] border-2 border-black text-yellow-300 font-comic tracking-wide shadow-[2px_2px_0px_#000]',
                 glow: 'shadow-none',
                 hex: '#64748b',
             };
@@ -685,33 +692,33 @@ export default function App() {
         if (absCents <= 2.0) {
             return {
                 state: 'IN_TUNE',
-                label: 'PERFECT • IN TUNE',
+                label: '★ POW! IN TUNE ★',
                 subLabel: 'Hold steady to lock string',
-                color: 'text-emerald-400',
-                badgeBg: 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300',
-                glow: 'shadow-[0_0_35px_rgba(16,185,129,0.35)]',
-                hex: '#10b981',
+                color: 'text-[#22c55e]',
+                badgeBg: 'bg-[#22c55e] border-2 border-black text-black font-comic tracking-wider shadow-[4px_4px_0px_#000] rotate-[-1deg]',
+                glow: 'shadow-[4px_4px_0px_#000]',
+                hex: '#22c55e',
             };
         }
         if (absCents <= 10.0) {
             return {
                 state: centsOffset < 0 ? 'SLIGHTLY_FLAT' : 'SLIGHTLY_SHARP',
-                label: centsOffset < 0 ? 'Slightly Flat • Tune Up ↑' : 'Slightly Sharp • Tune Down ↓',
+                label: centsOffset < 0 ? '⚡ TUNE UP! (SLIGHTLY FLAT) ⚡' : '⚡ TUNE DOWN! (SLIGHTLY SHARP) ⚡',
                 subLabel: `${centsOffset > 0 ? '+' : ''}${centsOffset.toFixed(1)} cents`,
-                color: 'text-amber-400',
-                badgeBg: 'bg-amber-500/20 border-amber-500/50 text-amber-300',
-                glow: 'shadow-[0_0_25px_rgba(245,158,11,0.2)]',
-                hex: '#f59e0b',
+                color: 'text-[#facc15]',
+                badgeBg: 'bg-[#facc15] border-2 border-black text-black font-comic tracking-wider shadow-[4px_4px_0px_#000] rotate-[1deg]',
+                glow: 'shadow-[4px_4px_0px_#000]',
+                hex: '#facc15',
             };
         }
         return {
             state: centsOffset < 0 ? 'FAR_FLAT' : 'FAR_SHARP',
-            label: centsOffset < 0 ? 'Too Flat • Tune Up ↑↑' : 'Too Sharp • Tune Down ↓↓',
+            label: centsOffset < 0 ? '💥 TOO FLAT! TUNE UP ↑↑ 💥' : '💥 TOO SHARP! TUNE DOWN ↓↓ 💥',
             subLabel: `${centsOffset > 0 ? '+' : ''}${centsOffset.toFixed(1)} cents deviation`,
-            color: 'text-rose-400',
-            badgeBg: 'bg-rose-500/20 border-rose-500/50 text-rose-300',
-            glow: 'shadow-[0_0_25px_rgba(244,63,94,0.25)]',
-            hex: '#f43f5e',
+            color: 'text-[#ef4444]',
+            badgeBg: 'bg-[#ef4444] border-2 border-black text-white font-comic tracking-wider shadow-[4px_4px_0px_#000] rotate-[-1deg]',
+            glow: 'shadow-[4px_4px_0px_#000]',
+            hex: '#ef4444',
         };
     }, [hasSignal, absCents, centsOffset]);
 
@@ -729,24 +736,30 @@ export default function App() {
     const isNative = Capacitor.isNativePlatform();
 
     return (
-        <div className="h-screen h-dvh w-full bg-slate-950 text-slate-100 flex flex-col items-center justify-center select-none font-sans overflow-hidden p-0 sm:p-4">
-            <div className="w-full max-w-[440px] h-full sm:h-[840px] max-h-screen sm:max-h-[92vh] bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 sm:rounded-[36px] sm:border-[4px] sm:border-slate-800 sm:shadow-[0_25px_70px_rgba(0,0,0,0.85)] flex flex-col justify-between relative overflow-hidden">
+        <div className="h-screen h-dvh w-full flex flex-col items-center justify-center select-none font-sans overflow-hidden p-0 sm:p-4 bg-[#080a12] comic-halftone text-slate-100">
+            <div className="w-full max-w-[440px] h-full sm:h-[840px] max-h-screen sm:max-h-[92vh] flex flex-col justify-between relative overflow-hidden bg-[#10131e] sm:rounded-[28px] sm:border-[3.5px] sm:border-black sm:shadow-[8px_8px_0px_#000]">
                 {/* COMPACT TOP APP BAR WITH SAFE AREA HEADER */}
-                <header
-                    className="px-4 pb-2.5 bg-slate-900 border-b border-slate-800/80 z-20 shrink-0"
+                <header className="px-4 pb-2.5 z-20 shrink-0 transition-colors bg-[#161a29] border-b-[2.5px] border-black"
                     style={{ paddingTop: isNative ? 'max(env(safe-area-inset-top, 0px), 48px)' : '16px' }}
                 >
                     {/* App Title & Quick Actions */}
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-950/60">
-                                <Activity className="w-4 h-4 text-slate-950 stroke-[2.5]" />
-                            </div>
-                            <div>
-                                <h1 className="text-sm font-bold tracking-tight text-white flex items-center gap-1.5 leading-none">
-                                    FretPulse <span className="text-[9px] font-mono uppercase px-1 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">PRO</span>
+                            <img
+                                src="/logo.svg"
+                                alt="TuneSense Logo"
+                                className="w-8 h-8 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000] rotate-[-2deg] object-contain bg-[#161a29] p-0.5 shrink-0"
+                            />
+                            <div className="px-2.5 py-0.5 bg-[#e22129] border-2 border-black shadow-[2.5px_2.5px_0px_#000] rotate-[-1.5deg]">
+                                <h1 className="font-comic text-xl text-white tracking-widest leading-none drop-shadow">
+                                    TUNESENSE
                                 </h1>
-                                <p className="text-[10px] text-slate-400 mt-0.5">A4={a4Calibration}Hz • E A D G B E</p>
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="bg-[#facc15] text-black font-comic text-[9px] uppercase px-1 py-0.2 border border-black shadow-[1px_1px_0px_#000] rotate-[2deg] leading-tight">
+                                    80s MARVEL ED.
+                                </span>
+                                <span className="text-[9px] font-mono font-bold text-yellow-300/80 mt-0.5">A4={a4Calibration}Hz</span>
                             </div>
                         </div>
 
@@ -754,27 +767,27 @@ export default function App() {
                             {/* Mic Active indicator / toggle button */}
                             <button
                                 onClick={isListening ? stopListening : startListening}
-                                className={`px-2 py-1 rounded-xl text-[10px] font-bold flex items-center gap-1.5 border transition active:scale-95 ${
+                                className={`px-2.5 py-1 rounded-lg text-[10px] font-comic tracking-wide flex items-center gap-1.5 border-2 border-black shadow-[2px_2px_0px_#000] transition active:translate-x-0.5 active:translate-y-0.5 ${
                                     isListening
-                                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40'
-                                        : 'bg-rose-500/15 text-rose-300 border-rose-500/40'
+                                        ? 'bg-[#22c55e] text-black'
+                                        : 'bg-[#ef4444] text-white'
                                 }`}
                                 title={isListening ? 'Mic Active (Tap to pause)' : 'Mic Paused (Tap to start)'}
                             >
-                                <span className={`w-1.5 h-1.5 rounded-full ${isListening ? 'bg-emerald-400 animate-ping' : 'bg-rose-400'}`} />
+                                <span className={`w-1.5 h-1.5 rounded-full ${isListening ? 'bg-black animate-ping' : 'bg-white'}`} />
                                 {isListening ? 'MIC ON' : 'PAUSED'}
                             </button>
 
                             <button
                                 onClick={() => setShowInfo(true)}
-                                className="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 border border-slate-700/60 transition active:scale-95"
+                                className="p-1.5 rounded-lg bg-[#1e2337] hover:bg-[#282e47] text-yellow-300 border-2 border-black shadow-[2px_2px_0px_#000] transition active:translate-x-0.5 active:translate-y-0.5"
                                 title="Tuning Guide & Specs"
                             >
                                 <Info className="w-3.5 h-3.5" />
                             </button>
                             <button
                                 onClick={() => setShowSettings(true)}
-                                className="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 border border-slate-700/60 transition active:scale-95 relative"
+                                className="p-1.5 rounded-lg bg-[#1e2337] hover:bg-[#282e47] text-yellow-300 border-2 border-black shadow-[2px_2px_0px_#000] transition active:translate-x-0.5 active:translate-y-0.5 relative"
                                 title="Calibration & Audio Settings"
                             >
                                 <Settings className="w-3.5 h-3.5" />
@@ -785,37 +798,40 @@ export default function App() {
                         </div>
                     </div>
 
-                    {/* Mode Selector Segmented Pill Bar */}
-                    <div className="grid grid-cols-3 gap-1 p-1 mt-2.5 bg-slate-950/90 rounded-xl border border-slate-800/80 text-[11px] font-semibold">
+                    {/* Mode Selector Segmented Pill Bar (Marvel Comic Permanent Font) */}
+                    <div className="grid grid-cols-3 gap-1.5 p-1 mt-2.5 rounded-xl bg-[#0d0f17] border-2 border-black shadow-[3px_3px_0px_#000] font-comic">
                         <button
                             onClick={() => setTuningMode('AUTO')}
-                            className={`py-1 px-1.5 rounded-lg flex items-center justify-center gap-1 transition-all ${tuningMode === 'AUTO'
-                                    ? 'bg-emerald-500 text-slate-950 shadow-sm shadow-emerald-950/50'
-                                    : 'text-slate-400 hover:text-slate-200'
-                                }`}
+                            className={`py-1.5 px-1.5 rounded-lg flex items-center justify-center gap-1.5 font-comic text-xs tracking-wider transition-all select-none active:scale-95 ${
+                                tuningMode === 'AUTO'
+                                    ? 'bg-[#facc15] text-black border-2 border-black shadow-[2px_2px_0px_#000]'
+                                    : 'text-slate-300 hover:text-yellow-300 hover:bg-[#181c2d] border-2 border-transparent'
+                            }`}
                         >
-                            <Sparkles className="w-3 h-3" />
-                            Auto String
+                            <Sparkles className="w-3.5 h-3.5 stroke-[2.5]" />
+                            AUTO
                         </button>
                         <button
                             onClick={() => setTuningMode('MANUAL')}
-                            className={`py-1 px-1.5 rounded-lg flex items-center justify-center gap-1 transition-all ${tuningMode === 'MANUAL'
-                                    ? 'bg-amber-500 text-slate-950 shadow-sm shadow-amber-950/50'
-                                    : 'text-slate-400 hover:text-slate-200'
-                                }`}
+                            className={`py-1.5 px-1.5 rounded-lg flex items-center justify-center gap-1.5 font-comic text-xs tracking-wider transition-all select-none active:scale-95 ${
+                                tuningMode === 'MANUAL'
+                                    ? 'bg-[#f97316] text-black border-2 border-black shadow-[2px_2px_0px_#000]'
+                                    : 'text-slate-300 hover:text-orange-300 hover:bg-[#181c2d] border-2 border-transparent'
+                            }`}
                         >
-                            <Lock className="w-3 h-3" />
-                            String Lock
+                            <Lock className="w-3.5 h-3.5 stroke-[2.5]" />
+                            LOCK
                         </button>
                         <button
                             onClick={() => setTuningMode('CHROMATIC')}
-                            className={`py-1 px-1.5 rounded-lg flex items-center justify-center gap-1 transition-all ${tuningMode === 'CHROMATIC'
-                                    ? 'bg-sky-500 text-slate-950 shadow-sm shadow-sky-950/50'
-                                    : 'text-slate-400 hover:text-slate-200'
-                                }`}
+                            className={`py-1.5 px-1.5 rounded-lg flex items-center justify-center gap-1.5 font-comic text-xs tracking-wider transition-all select-none active:scale-95 ${
+                                tuningMode === 'CHROMATIC'
+                                    ? 'bg-[#06b6d4] text-black border-2 border-black shadow-[2px_2px_0px_#000]'
+                                    : 'text-slate-300 hover:text-cyan-300 hover:bg-[#181c2d] border-2 border-transparent'
+                            }`}
                         >
-                            <Radio className="w-3 h-3" />
-                            Chromatic
+                            <Radio className="w-3.5 h-3.5 stroke-[2.5]" />
+                            CHROMATIC
                         </button>
                     </div>
                 </header>
@@ -996,45 +1012,51 @@ export default function App() {
                             {/* Central Note Badge */}
                             <div className="flex flex-col items-center -mt-7 z-10">
                                 <div
-                                    className={`relative w-20 h-20 rounded-2xl flex flex-col items-center justify-center border-2 transition-all duration-200 ${!hasSignal
-                                            ? 'bg-slate-900/90 border-slate-800 text-slate-300'
+                                    className={`relative w-24 h-24 rounded-2xl flex flex-col items-center justify-center transition-all duration-150 ${
+                                        !hasSignal
+                                            ? 'bg-[#181c2c] border-[3px] border-black shadow-[4px_4px_0px_#000] text-yellow-400 comic-halftone'
                                             : absCents <= 2
-                                                ? 'bg-emerald-950/80 border-emerald-400 text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.4)] scale-105'
+                                                ? 'bg-[#22c55e] border-[3px] border-black shadow-[6px_6px_0px_#000] text-black scale-105 rotate-[-1deg]'
                                                 : absCents <= 10
-                                                    ? 'bg-amber-950/60 border-amber-400/80 text-amber-200'
-                                                    : 'bg-rose-950/60 border-rose-500/80 text-rose-200'
-                                        }`}
+                                                    ? 'bg-[#facc15] border-[3px] border-black shadow-[5px_5px_0px_#000] text-black rotate-[1deg]'
+                                                    : 'bg-[#ef4444] border-[3px] border-black shadow-[5px_5px_0px_#000] text-white rotate-[-1deg]'
+                                    }`}
                                 >
                                     {/* In-tune checkmark corner badge */}
                                     {hasSignal && absCents <= 2 && (
-                                        <span className="absolute -top-1.5 -right-1.5 bg-emerald-500 text-slate-950 rounded-full p-0.5 shadow-md">
-                                            <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />
+                                        <span className="absolute -top-2 -right-2 rounded-full p-0.5 shadow-md bg-black text-[#22c55e] border border-black shadow-[2px_2px_0px_#000]">
+                                            <CheckCircle2 className="w-4 h-4 stroke-[3]" />
                                         </span>
                                     )}
 
                                     {/* Lock Indicator when in Manual Mode */}
                                     {tuningMode === 'MANUAL' && (
-                                        <span className="absolute -top-1.5 -left-1.5 bg-amber-500 text-slate-950 rounded-full px-1.5 py-0.5 text-[8px] font-bold flex items-center gap-0.5 shadow">
+                                        <span className="absolute -top-2 -left-2 rounded-full px-1.5 py-0.5 text-[8px] font-bold flex items-center gap-0.5 bg-[#f97316] text-black border border-black shadow-[2px_2px_0px_#000] font-comic">
                                             <Lock className="w-2 h-2" /> S{lockedStringNum}
                                         </span>
                                     )}
 
                                     <div className="flex items-baseline">
-                                        <span className="text-3xl font-black tracking-tighter">
+                                        <span className="font-comic text-5xl leading-none comic-text-shadow-yellow text-yellow-300">
                                             {activeTarget.note}
                                         </span>
-                                        <span className="text-lg font-bold text-emerald-400 ml-0.5">
+                                        <span className="font-comic text-2xl ml-1 text-white comic-text-shadow">
                                             {activeTarget.octave}
                                         </span>
                                     </div>
+                                    {hasSignal && (
+                                        <span className="text-[10px] font-mono font-black mt-0.5 leading-none">
+                                            {detectedFreq ? `${detectedFreq.toFixed(1)}Hz` : ''}
+                                        </span>
+                                    )}
                                 </div>
 
                                 {/* Status Feedback Pill */}
                                 <div
-                                    className={`mt-1.5 px-3.5 py-1 rounded-full border text-[11px] font-bold tracking-wide flex items-center gap-1.5 transition-all shadow-sm ${tuningStatus.badgeBg}`}
+                                    className={`mt-2 px-3.5 py-1 rounded-full border text-[11px] font-bold tracking-wide flex items-center gap-1.5 transition-all shadow-sm ${tuningStatus.badgeBg}`}
                                 >
-                                    {hasSignal && centsOffset < -2 && <ChevronUp className="w-3.5 h-3.5 animate-bounce" />}
-                                    {hasSignal && centsOffset > 2 && <ChevronDown className="w-3.5 h-3.5 animate-bounce" />}
+                                    {hasSignal && centsOffset < -2 && <ChevronUp className="w-3.5 h-3.5 animate-bounce stroke-[3]" />}
+                                    {hasSignal && centsOffset > 2 && <ChevronDown className="w-3.5 h-3.5 animate-bounce stroke-[3]" />}
                                     <span>{tuningStatus.label}</span>
                                 </div>
                             </div>
@@ -1042,18 +1064,18 @@ export default function App() {
                     </div>
 
                     {/* LOWER SECTION: INTERACTIVE GUITAR HEADSTOCK CONTROLLER */}
-                    <div className="w-full bg-slate-900/80 border border-slate-800/90 rounded-2xl p-2.5 shrink-0 shadow-lg">
+                    <div className="w-full rounded-2xl p-2.5 shrink-0 shadow-lg bg-[#141724] border-[2.5px] border-black shadow-[4px_4px_0px_#000] comic-halftone">
                         <div className="flex items-center justify-between mb-2 px-1">
                             <div className="flex items-center gap-1.5">
-                                <span className="text-xs font-bold text-slate-200">
-                                    Standard 6-String Headstock
+                                <span className="font-comic text-sm tracking-wide text-yellow-400 drop-shadow">
+                                    ★ 6-STRING HEADSTOCK ★
                                 </span>
                                 {tuningMode === 'MANUAL' && (
                                     <button
                                         onClick={() => setTuningMode('AUTO')}
-                                        className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-0.5 hover:bg-amber-500/30 font-semibold"
+                                        className="text-[10px] px-2 py-0.5 rounded-lg bg-[#f97316] text-black border border-black shadow-[1px_1px_0px_#000] font-comic uppercase"
                                     >
-                                        <Unlock className="w-2.5 h-2.5" /> Unlock Auto
+                                        <Unlock className="w-2.5 h-2.5 inline mr-0.5" /> Unlock Auto
                                     </button>
                                 )}
                             </div>
@@ -1062,7 +1084,7 @@ export default function App() {
                                 {playingToneString !== null && (
                                     <button
                                         onClick={stopReferenceTone}
-                                        className="px-2 py-0.5 rounded-lg bg-amber-500 text-slate-950 font-bold text-[10px] flex items-center gap-1 shadow active:scale-95 animate-pulse"
+                                        className="px-2 py-0.5 rounded-lg bg-[#e22129] text-white font-comic text-xs border-2 border-black shadow-[2px_2px_0px_#000] flex items-center gap-1 animate-pulse"
                                         title="Stop Loop Tone"
                                     >
                                         <VolumeX className="w-3 h-3 stroke-[2.5]" />
@@ -1070,13 +1092,13 @@ export default function App() {
                                     </button>
                                 )}
 
-                                <span className="text-[11px] font-mono text-emerald-400 font-semibold">
+                                <span className="font-comic text-xs px-2 py-0.5 rounded bg-[#22c55e] text-black border border-black shadow-[1.5px_1.5px_0px_#000]">
                                     {tunedCount}/6 Tuned
                                 </span>
                                 {tunedCount > 0 && (
                                     <button
                                         onClick={() => setTunedStrings({})}
-                                        className="p-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition active:scale-95"
+                                        className="p-1 rounded-lg bg-black text-yellow-400 border border-yellow-400/40 hover:text-white"
                                         title="Reset tuned string badges"
                                     >
                                         <RotateCcw className="w-3 h-3" />
@@ -1098,39 +1120,39 @@ export default function App() {
                                     const isTuned = !!tunedStrings[str.stringNum];
                                     const isPlayingTone = playingToneString === str.stringNum;
 
+                                    const leftCardClass = isTarget
+                                        ? 'bg-[#facc15] text-black border-2 border-black shadow-[3px_3px_0px_#000] scale-[1.02]'
+                                        : isTuned
+                                            ? 'bg-[#22c55e] text-black border-2 border-black shadow-[3px_3px_0px_#000]'
+                                            : 'bg-[#181c2d] text-slate-200 border-2 border-black shadow-[2px_2px_0px_#000] hover:bg-[#22273e]';
+
+                                    const leftBadgeClass = isTarget
+                                        ? 'bg-black text-[#facc15] font-comic text-xs'
+                                        : isTuned
+                                            ? 'bg-black text-[#22c55e] font-comic text-xs'
+                                            : 'bg-black text-yellow-300 font-comic text-xs';
+
                                     return (
                                         <div
                                             key={str.stringNum}
-                                            className={`group relative rounded-xl border p-2 transition-all flex items-center justify-between ${isTarget
-                                                    ? 'bg-emerald-500/15 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.25)] ring-1 ring-emerald-500/30'
-                                                    : isTuned
-                                                        ? 'bg-slate-800/90 border-emerald-500/40'
-                                                        : 'bg-slate-950/80 border-slate-800 hover:border-slate-700'
-                                                }`}
+                                            className={`group relative rounded-xl border p-2 transition-all flex items-center justify-between ${leftCardClass}`}
                                         >
                                             <button
                                                 onClick={() => handleSelectString(str)}
                                                 className="flex items-center gap-2 flex-1 text-left min-w-0"
                                             >
-                                                <span
-                                                    className={`w-5 h-5 rounded-lg text-[10px] font-black flex items-center justify-center shrink-0 ${isTarget
-                                                            ? 'bg-emerald-400 text-slate-950'
-                                                            : isTuned
-                                                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                                                                : 'bg-slate-800 text-slate-300'
-                                                        }`}
-                                                >
+                                                <span className={`w-5 h-5 rounded-lg font-black flex items-center justify-center shrink-0 ${leftBadgeClass}`}>
                                                     {str.stringNum}
                                                 </span>
                                                 <div className="min-w-0">
                                                     <div className="flex items-center gap-1 leading-none">
-                                                        <span className="text-xs font-extrabold text-white">
+                                                        <span className="font-comic text-base leading-none">
                                                             {str.name}
                                                         </span>
-                                                        {isLocked && <Lock className="w-2.5 h-2.5 text-amber-400 shrink-0" />}
-                                                        {isTuned && <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400 shrink-0" />}
+                                                        {isLocked && <Lock className="w-2.5 h-2.5 shrink-0 text-black stroke-[3]" />}
+                                                        {isTuned && <CheckCircle2 className="w-2.5 h-2.5 shrink-0 text-black stroke-[3]" />}
                                                     </div>
-                                                    <span className="text-[9px] font-mono text-slate-400 block mt-0.5">
+                                                    <span className={`text-[9px] font-mono block mt-0.5 ${isTarget || isTuned ? 'text-black/80 font-bold' : 'text-slate-400'}`}>
                                                         {str.targetFreq.toFixed(1)}Hz
                                                     </span>
                                                 </div>
@@ -1139,10 +1161,11 @@ export default function App() {
                                             {/* Reference Tone Speaker Button (Instant Loop) */}
                                             <button
                                                 onClick={() => playReferenceString(str)}
-                                                className={`p-1.5 rounded-lg border transition shrink-0 ${isPlayingTone
-                                                        ? 'bg-amber-500 text-slate-950 border-amber-400 animate-pulse'
-                                                        : 'bg-slate-800/80 text-slate-400 border-slate-700/60 hover:text-white'
-                                                    }`}
+                                                className={`p-1.5 rounded-lg border transition shrink-0 ${
+                                                    isPlayingTone
+                                                        ? 'bg-[#e22129] text-white border-black border-2 animate-pulse'
+                                                        : 'bg-black/30 text-yellow-300 border-black/40 hover:bg-black/60'
+                                                }`}
                                                 title={`Play ${str.name} loop guitar tone`}
                                             >
                                                 <Volume2 className="w-3.5 h-3.5" />
@@ -1239,23 +1262,31 @@ export default function App() {
                                     const isTuned = !!tunedStrings[str.stringNum];
                                     const isPlayingTone = playingToneString === str.stringNum;
 
+                                    const rightCardClass = isTarget
+                                        ? 'bg-[#facc15] text-black border-2 border-black shadow-[3px_3px_0px_#000] scale-[1.02]'
+                                        : isTuned
+                                            ? 'bg-[#22c55e] text-black border-2 border-black shadow-[3px_3px_0px_#000]'
+                                            : 'bg-[#181c2d] text-slate-200 border-2 border-black shadow-[2px_2px_0px_#000] hover:bg-[#22273e]';
+
+                                    const rightBadgeClass = isTarget
+                                        ? 'bg-black text-[#facc15] font-comic text-xs'
+                                        : isTuned
+                                            ? 'bg-black text-[#22c55e] font-comic text-xs'
+                                            : 'bg-black text-yellow-300 font-comic text-xs';
+
                                     return (
                                         <div
                                             key={str.stringNum}
-                                            className={`group relative rounded-xl border p-2 transition-all flex items-center justify-between ${isTarget
-                                                    ? 'bg-emerald-500/15 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.25)] ring-1 ring-emerald-500/30'
-                                                    : isTuned
-                                                        ? 'bg-slate-800/90 border-emerald-500/40'
-                                                        : 'bg-slate-950/80 border-slate-800 hover:border-slate-700'
-                                                }`}
+                                            className={`group relative rounded-xl border p-2 transition-all flex items-center justify-between ${rightCardClass}`}
                                         >
                                             {/* Reference Tone Speaker Button (Instant Loop) */}
                                             <button
                                                 onClick={() => playReferenceString(str)}
-                                                className={`p-1.5 rounded-lg border transition shrink-0 ${isPlayingTone
-                                                        ? 'bg-amber-500 text-slate-950 border-amber-400 animate-pulse'
-                                                        : 'bg-slate-800/80 text-slate-400 border-slate-700/60 hover:text-white'
-                                                    }`}
+                                                className={`p-1.5 rounded-lg border transition shrink-0 ${
+                                                    isPlayingTone
+                                                        ? 'bg-[#e22129] text-white border-black border-2 animate-pulse'
+                                                        : 'bg-black/30 text-yellow-300 border-black/40 hover:bg-black/60'
+                                                }`}
                                                 title={`Play ${str.name} loop guitar tone`}
                                             >
                                                 <Volume2 className="w-3.5 h-3.5" />
@@ -1267,24 +1298,17 @@ export default function App() {
                                             >
                                                 <div className="min-w-0">
                                                     <div className="flex items-center justify-end gap-1 leading-none">
-                                                        {isTuned && <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400 shrink-0" />}
-                                                        {isLocked && <Lock className="w-2.5 h-2.5 text-amber-400 shrink-0" />}
-                                                        <span className="text-xs font-extrabold text-white">
+                                                        {isTuned && <CheckCircle2 className="w-2.5 h-2.5 shrink-0 text-black stroke-[3]" />}
+                                                        {isLocked && <Lock className="w-2.5 h-2.5 shrink-0 text-black stroke-[3]" />}
+                                                        <span className="font-comic text-base leading-none">
                                                             {str.name}
                                                         </span>
                                                     </div>
-                                                    <span className="text-[9px] font-mono text-slate-400 block mt-0.5">
+                                                    <span className={`text-[9px] font-mono block mt-0.5 ${isTarget || isTuned ? 'text-black/80 font-bold' : 'text-slate-400'}`}>
                                                         {str.targetFreq.toFixed(1)}Hz
                                                     </span>
                                                 </div>
-                                                <span
-                                                    className={`w-5 h-5 rounded-lg text-[10px] font-black flex items-center justify-center shrink-0 ${isTarget
-                                                            ? 'bg-emerald-400 text-slate-950'
-                                                            : isTuned
-                                                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                                                                : 'bg-slate-800 text-slate-300'
-                                                        }`}
-                                                >
+                                                <span className={`w-5 h-5 rounded-lg font-black flex items-center justify-center shrink-0 ${rightBadgeClass}`}>
                                                     {str.stringNum}
                                                 </span>
                                             </button>
@@ -1297,35 +1321,45 @@ export default function App() {
                 </main>
 
                 {/* ==========================================
-            SETTINGS DRAWER MODAL (CALIBRATION & NOISE GATE)
-           ========================================== */}
+                    TUNER CALIBRATION & AUDIO LABS (80s MARVEL COMIC EDITION)
+                   ========================================== */}
                 {showSettings && (
-                    <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-40 flex items-end justify-center">
-                        <div className="w-full bg-slate-900 border-t border-slate-800 rounded-t-3xl p-5 shadow-2xl animate-in slide-in-from-bottom">
-                            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div className="absolute inset-0 bg-black/85 backdrop-blur-sm z-40 flex items-end justify-center animate-in fade-in">
+                        <div className="w-full max-h-[85vh] overflow-y-auto bg-[#121524] border-t-[3.5px] border-black rounded-t-3xl p-5 shadow-[0_-8px_0px_#000] animate-in slide-in-from-bottom comic-halftone">
+                            {/* Modal Header */}
+                            <div className="flex items-center justify-between pb-3 border-b-2 border-black/80">
                                 <div className="flex items-center gap-2">
-                                    <Sliders className="w-4 h-4 text-emerald-400" />
-                                    <h2 className="text-base font-bold text-white">Tuner Calibration & Audio</h2>
+                                    <div className="px-2.5 py-0.5 bg-[#e22129] border-2 border-black shadow-[2px_2px_0px_#000] rotate-[-1deg]">
+                                        <h2 className="text-base font-comic text-white tracking-wider flex items-center gap-1.5">
+                                            <Sliders className="w-4 h-4 text-white inline" />
+                                            STARK AUDIO LAB • CALIBRATION
+                                        </h2>
+                                    </div>
                                 </div>
                                 <button
                                     onClick={() => setShowSettings(false)}
-                                    className="p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white"
+                                    className="p-1.5 rounded-xl bg-black text-yellow-300 hover:text-white border-2 border-black shadow-[2px_2px_0px_#000] transition active:translate-x-0.5 active:translate-y-0.5"
+                                    title="Close Settings"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
                             </div>
 
-                            <div className="space-y-5 py-4">
-                                {/* A4 Reference Pitch Calibration */}
-                                <div>
-                                    <div className="flex justify-between text-xs mb-1.5">
-                                        <span className="text-slate-300 font-semibold">A4 Reference Pitch</span>
-                                        <span className="font-mono font-bold text-emerald-400">{a4Calibration} Hz</span>
+                            <div className="space-y-4 py-4">
+                                {/* A4 Reference Pitch Calibration Card */}
+                                <div className="p-3.5 bg-[#181d2f] border-2 border-black shadow-[3px_3px_0px_#000] rounded-2xl">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="font-comic text-xs tracking-wider text-yellow-400">
+                                            ★ A4 REFERENCE FREQUENCY ★
+                                        </span>
+                                        <span className="font-comic text-sm px-2 py-0.5 rounded bg-black text-[#22c55e] border border-black shadow-[1.5px_1.5px_0px_#000]">
+                                            {a4Calibration} Hz
+                                        </span>
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <button
                                             onClick={() => setA4Calibration((v) => Math.max(432, v - 1))}
-                                            className="px-3 py-1.5 rounded-xl bg-slate-800 text-white font-bold text-sm"
+                                            className="w-9 h-9 rounded-xl bg-black text-yellow-400 font-comic text-xl border-2 border-black shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 flex items-center justify-center"
                                         >
                                             -
                                         </button>
@@ -1336,24 +1370,25 @@ export default function App() {
                                             step="1"
                                             value={a4Calibration}
                                             onChange={(e) => setA4Calibration(Number(e.target.value))}
-                                            className="flex-1 accent-emerald-500"
+                                            className="flex-1 accent-yellow-400 cursor-pointer"
                                         />
                                         <button
                                             onClick={() => setA4Calibration((v) => Math.min(448, v + 1))}
-                                            className="px-3 py-1.5 rounded-xl bg-slate-800 text-white font-bold text-sm"
+                                            className="w-9 h-9 rounded-xl bg-black text-yellow-400 font-comic text-xl border-2 border-black shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 flex items-center justify-center"
                                         >
                                             +
                                         </button>
                                     </div>
-                                    <div className="flex justify-between mt-2 gap-2">
+                                    <div className="grid grid-cols-4 gap-1.5 mt-2.5">
                                         {[432, 440, 442, 444].map((preset) => (
                                             <button
                                                 key={preset}
                                                 onClick={() => setA4Calibration(preset)}
-                                                className={`flex-1 py-1 rounded-lg text-xs font-mono border ${a4Calibration === preset
-                                                        ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold'
-                                                        : 'bg-slate-800/70 border-slate-700 text-slate-400'
-                                                    }`}
+                                                className={`py-1 rounded-lg font-comic text-xs border-2 border-black transition ${
+                                                    a4Calibration === preset
+                                                        ? 'bg-[#facc15] text-black shadow-[2px_2px_0px_#000] scale-[1.03]'
+                                                        : 'bg-black/60 text-slate-300 shadow-[1px_1px_0px_#000] hover:text-white'
+                                                }`}
                                             >
                                                 {preset} Hz
                                             </button>
@@ -1361,16 +1396,18 @@ export default function App() {
                                     </div>
                                 </div>
 
-                                {/* Microphone Noise Gate Sensitivity */}
-                                <div>
-                                    <div className="flex justify-between text-xs mb-1.5">
-                                        <span className="text-slate-300 font-semibold">Room Noise Gate Threshold</span>
-                                        <span className="font-mono text-sky-400">
+                                {/* Microphone Noise Gate Sensitivity Card */}
+                                <div className="p-3.5 bg-[#181d2f] border-2 border-black shadow-[3px_3px_0px_#000] rounded-2xl">
+                                    <div className="flex justify-between items-center mb-1.5">
+                                        <span className="font-comic text-xs tracking-wider text-yellow-400">
+                                            ⚡ NOISE GATE FORCE FIELD ⚡
+                                        </span>
+                                        <span className="font-comic text-[11px] px-2 py-0.5 rounded bg-black text-[#38bdf8] border border-black shadow-[1.5px_1.5px_0px_#000]">
                                             {noiseGateRms <= 0.006
-                                                ? 'High Sensitivity (Quiet Room)'
+                                                ? 'MAX SENSITIVITY'
                                                 : noiseGateRms <= 0.015
-                                                    ? 'Balanced'
-                                                    : 'Strict (Noisy Room)'}
+                                                    ? 'BALANCED HERO'
+                                                    : 'STRICT ARMOR'}
                                         </span>
                                     </div>
                                     <input
@@ -1380,69 +1417,138 @@ export default function App() {
                                         step="0.002"
                                         value={noiseGateRms}
                                         onChange={(e) => setNoiseGateRms(Number(e.target.value))}
-                                        className="w-full accent-sky-500"
+                                        className="w-full accent-cyan-400 cursor-pointer"
                                     />
-                                    <p className="text-[11px] text-slate-400 mt-1">
-                                        Filters out background chatter or amp hum before locking onto your guitar string.
+                                    <p className="text-[10px] text-slate-400 mt-1.5 leading-relaxed font-sans">
+                                        Filters out background noise, hum, and room chatter before locking onto your guitar notes.
                                     </p>
+                                </div>
+
+                                {/* Creator Credit Card (Explicit User Requirement) */}
+                                <div className="p-3 bg-[#181d2f] border-2 border-black shadow-[3px_3px_0px_#000] rounded-2xl flex items-center gap-3 comic-halftone">
+                                    <div className="w-10 h-10 rounded-xl bg-[#e22129] border-2 border-black shadow-[2px_2px_0px_#000] flex items-center justify-center shrink-0 rotate-[-2deg]">
+                                        <span className="font-comic text-xl text-white">FN</span>
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="bg-[#facc15] text-black font-comic text-[9px] uppercase px-1 py-0.2 border border-black shadow-[1px_1px_0px_#000] rotate-[1deg]">
+                                                MARVEL CREATOR
+                                            </span>
+                                        </div>
+                                        <p className="text-xs font-black text-white tracking-wide mt-0.5">
+                                            Aplikasi ini dibuat oleh <span className="text-yellow-400 font-comic text-sm tracking-wide">Fathan Nuhi</span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
                             <button
                                 onClick={() => setShowSettings(false)}
-                                className="w-full py-3 rounded-2xl bg-emerald-500 text-slate-950 font-bold text-sm shadow-lg"
+                                className="w-full py-3 rounded-2xl bg-[#facc15] hover:bg-[#eab308] text-black font-comic text-base tracking-wider border-2 border-black shadow-[4px_4px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition"
                             >
-                                Save & Return to Tuner
+                                ★ SAVE & RETURN TO TUNER ★
                             </button>
                         </div>
                     </div>
                 )}
 
                 {/* ==========================================
-            TUNING GUIDE & SPECS MODAL
-           ========================================== */}
+                    STANDARD GUITAR TUNING EXPERIENCE (80s MARVEL COMIC EDITION)
+                   ========================================== */}
                 {showInfo && (
-                    <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-40 flex items-end justify-center">
-                        <div className="w-full bg-slate-900 border-t border-slate-800 rounded-t-3xl p-5 shadow-2xl">
-                            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div className="absolute inset-0 bg-black/85 backdrop-blur-sm z-40 flex items-end justify-center animate-in fade-in">
+                        <div className="w-full max-h-[85vh] overflow-y-auto bg-[#121524] border-t-[3.5px] border-black rounded-t-3xl p-5 shadow-[0_-8px_0px_#000] animate-in slide-in-from-bottom comic-halftone">
+                            {/* Modal Header */}
+                            <div className="flex items-center justify-between pb-3 border-b-2 border-black/80">
                                 <div className="flex items-center gap-2">
-                                    <Info className="w-4 h-4 text-emerald-400" />
-                                    <h2 className="text-base font-bold text-white">Standard Guitar Tuning Reference</h2>
+                                    <div className="px-2.5 py-0.5 bg-[#e22129] border-2 border-black shadow-[2px_2px_0px_#000] rotate-[-1deg]">
+                                        <h2 className="text-base font-comic text-white tracking-wider flex items-center gap-1.5">
+                                            <Info className="w-4 h-4 text-white inline" />
+                                            STANDARD GUITAR TUNING GUIDE
+                                        </h2>
+                                    </div>
                                 </div>
                                 <button
                                     onClick={() => setShowInfo(false)}
-                                    className="p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white"
+                                    className="p-1.5 rounded-xl bg-black text-yellow-300 hover:text-white border-2 border-black shadow-[2px_2px_0px_#000] transition active:translate-x-0.5 active:translate-y-0.5"
+                                    title="Close Guide"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
                             </div>
 
-                            <div className="py-3 space-y-3 text-xs text-slate-300">
-                                <p className="leading-relaxed text-slate-400">
-                                    Uses the <strong className="text-white">McLeod Pitch Method (NSDF)</strong> with parabolic peak interpolation and raw studio audio capture (<code className="text-emerald-400">fftSize: 4096</code>) for ±0.1 Hz accuracy.
-                                </p>
-
-                                <div className="bg-slate-950 rounded-2xl p-3 border border-slate-800 space-y-1.5 font-mono text-[11px]">
-                                    {calibratedStrings.map((s) => (
-                                        <div key={s.stringNum} className="flex justify-between items-center py-0.5 border-b border-slate-900 last:border-0">
-                                            <span className="text-slate-400">String {s.stringNum} ({s.label})</span>
-                                            <span className="text-emerald-400 font-bold">{s.name} — {s.targetFreq.toFixed(2)} Hz</span>
-                                        </div>
-                                    ))}
+                            <div className="py-4 space-y-3.5 text-xs">
+                                {/* Tech Overview Banner */}
+                                <div className="p-2.5 bg-[#181d2f] border-2 border-black shadow-[2px_2px_0px_#000] rounded-xl flex items-start gap-2">
+                                    <div className="w-6 h-6 rounded bg-[#facc15] text-black font-comic text-xs flex items-center justify-center shrink-0 border border-black shadow-[1px_1px_0px_#000] mt-0.5">
+                                        ⚡
+                                    </div>
+                                    <p className="leading-relaxed text-slate-300 text-[11px]">
+                                        Powered by the <strong className="text-yellow-400 font-comic tracking-wide text-xs">MCLEOD PITCH METHOD (NSDF)</strong> with studio parabolic interpolation (<code className="text-cyan-300 font-mono">fftSize: 4096</code>) for superhuman ±0.1 Hz accuracy!
+                                    </p>
                                 </div>
 
-                                <ul className="space-y-1 text-[11px] text-slate-400 list-disc pl-4">
-                                    <li><strong className="text-slate-200">Auto String:</strong> Automatically detects which of the 6 strings you plucked.</li>
-                                    <li><strong className="text-slate-200">String Lock:</strong> Tap any string card on the headstock to lock the target when restringing a very flat/sharp guitar.</li>
-                                    <li><strong className="text-slate-200">Strobe Bar:</strong> Drifts left when flat, right when sharp, and freezes when dead-on in tune.</li>
-                                </ul>
+                                {/* 6-String Stats Table */}
+                                <div className="bg-[#181d2f] rounded-2xl p-3 border-2 border-black shadow-[3px_3px_0px_#000]">
+                                    <div className="flex justify-between items-center pb-2 mb-2 border-b-2 border-black/60">
+                                        <span className="font-comic text-xs tracking-wider text-yellow-400">
+                                            ★ 6-STRING FREQUENCY MATRIX ★
+                                        </span>
+                                        <span className="font-comic text-[10px] text-slate-400">
+                                            STANDARD EADGBE
+                                        </span>
+                                    </div>
+                                    <div className="space-y-1.5 font-mono text-[11px]">
+                                        {calibratedStrings.map((s) => (
+                                            <div key={s.stringNum} className="flex justify-between items-center py-1 px-2 rounded-lg bg-black/40 border border-black/50">
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="w-4 h-4 rounded bg-black text-[#facc15] font-comic text-[10px] flex items-center justify-center border border-black">
+                                                        {s.stringNum}
+                                                    </span>
+                                                    <span className="text-slate-300 font-semibold">{s.label}</span>
+                                                </div>
+                                                <span className="text-yellow-300 font-bold font-comic text-xs">
+                                                    {s.name} <span className="text-emerald-400 font-mono text-[11px]">({s.targetFreq.toFixed(2)} Hz)</span>
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Comic Tips Grid */}
+                                <div className="space-y-2 text-[11px]">
+                                    <div className="p-2.5 bg-[#181d2f] border-2 border-black shadow-[2px_2px_0px_#000] rounded-xl flex items-start gap-2">
+                                        <span className="bg-[#facc15] text-black font-comic text-[9px] px-1.5 py-0.5 rounded border border-black shrink-0 shadow-[1px_1px_0px_#000]">
+                                            AUTO
+                                        </span>
+                                        <p className="text-slate-300 leading-snug">
+                                            <strong className="text-white">Auto String:</strong> Automatically senses which of your 6 guitar strings is vibrating and targets the ideal pitch.
+                                        </p>
+                                    </div>
+                                    <div className="p-2.5 bg-[#181d2f] border-2 border-black shadow-[2px_2px_0px_#000] rounded-xl flex items-start gap-2">
+                                        <span className="bg-[#f97316] text-black font-comic text-[9px] px-1.5 py-0.5 rounded border border-black shrink-0 shadow-[1px_1px_0px_#000]">
+                                            LOCK
+                                        </span>
+                                        <p className="text-slate-300 leading-snug">
+                                            <strong className="text-white">String Lock:</strong> Tap any string card on the headstock to lock the target frequency when tuning heavily detuned strings.
+                                        </p>
+                                    </div>
+                                    <div className="p-2.5 bg-[#181d2f] border-2 border-black shadow-[2px_2px_0px_#000] rounded-xl flex items-start gap-2">
+                                        <span className="bg-[#22c55e] text-black font-comic text-[9px] px-1.5 py-0.5 rounded border border-black shrink-0 shadow-[1px_1px_0px_#000]">
+                                            BEAM
+                                        </span>
+                                        <p className="text-slate-300 leading-snug">
+                                            <strong className="text-white">Strobe Bar:</strong> Energy beam drifts left when flat, right when sharp, and locks solid center when in perfect tune.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
 
                             <button
                                 onClick={() => setShowInfo(false)}
-                                className="w-full py-3 mt-2 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm"
+                                className="w-full py-3 mt-1 rounded-2xl bg-[#e22129] hover:bg-[#c91820] text-white font-comic text-base tracking-wider border-2 border-black shadow-[4px_4px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition"
                             >
-                                Got It
+                                ★ GOT IT, HERO! ★
                             </button>
                         </div>
                     </div>

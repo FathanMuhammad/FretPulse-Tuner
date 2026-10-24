@@ -1,4 +1,4 @@
-package com.fathan.fretpulse;
+package com.fathan.tunesense;
 
 import android.Manifest;
 import android.content.pm.PackageManager;

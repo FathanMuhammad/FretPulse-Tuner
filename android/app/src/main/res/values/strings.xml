@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">FretPulse Tuner</string>
-    <string name="title_activity_main">FretPulse Tuner</string>
-    <string name="package_name">com.fathan.fretpulse</string>
-    <string name="custom_url_scheme">com.fathan.fretpulse</string>
+    <string name="app_name">TuneSense</string>
+    <string name="title_activity_main">TuneSense</string>
+    <string name="package_name">com.fathan.tunesense</string>
+    <string name="custom_url_scheme">com.fathan.tunesense</string>
 </resources>
