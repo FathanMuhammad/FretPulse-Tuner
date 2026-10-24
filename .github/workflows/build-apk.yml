@@ -7,6 +7,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Debug APK
@@ -53,9 +56,32 @@ jobs:
           cd android
           ./gradlew assembleDebug --stacktrace
 
+      - name: Prepare APK Package
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk TuneSense-latest.apk
+
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: TuneSense-Debug-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: TuneSense-latest.apk
           if-no-files-found: error
+
+      - name: Publish or Update Latest Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: latest
+          name: "TuneSense - Latest Android Build"
+          body: |
+            ## 🎸 TuneSense (1980s Marvel Comic Book Edition)
+            Build otomatis terbaru dari branch `main`.
+
+            - **Commit**: `${{ github.sha }}`
+            - **Author**: Fathan Nuhi
+            - **Update**: ${{ github.event.head_commit.message }}
+
+            ### 📲 Download & Install
+            Klik file **`TuneSense-latest.apk`** di bawah untuk langsung mengunduh dan memasang di smartphone Android Anda.
+          files: TuneSense-latest.apk
+          make_latest: true
